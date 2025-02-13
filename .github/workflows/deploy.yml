@@ -1,0 +1,34 @@
+name: pbi:fabricclisample-adventureworks
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice        
+        required: true
+        default: 'dev'
+        options: 
+        - dev
+        - tst
+        - prd
+
+jobs:
+  setup-and-run-cli:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.12"
+
+      - name: Run Deployment Script
+        env:
+          FAB_CLIENT_ID: ${{ secrets.FAB_CLIENT_ID }}
+          FAB_CLIENT_SECRET: ${{ secrets.FAB_CLIENT_SECRET }}
+          FAB_TENANT_ID: ${{ secrets.FAB_TENANT_ID }}
+        run: |
+          echo ${{ github.event.inputs.environment }}
